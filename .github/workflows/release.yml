@@ -24,6 +24,15 @@ jobs:
         with:
           name: linux-arm64
           path: linux-arm64
+  linux-riscv64:
+    runs-on: [self-hosted, linux, riscv64]
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build --build-arg BASE_IMAGE=ubuntu:24.04 -o linux-riscv64 -f build/Dockerfile .
+      - uses: actions/upload-artifact@v6
+        with:
+          name: linux-riscv64
+          path: linux-riscv64
   darwin-amd64:
     runs-on: macos-15-intel
     steps:
@@ -59,6 +68,7 @@ jobs:
     needs:
       - linux-amd64
       - linux-arm64
+      - linux-riscv64
       - darwin-amd64
       - darwin-arm64
     steps:
@@ -70,6 +80,10 @@ jobs:
         with:
           name: linux-arm64
           path: linux-arm64
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-riscv64
+          path: linux-riscv64
       - uses: actions/download-artifact@v8
         with:
           name: darwin-amd64
